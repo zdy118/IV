@@ -1,4 +1,4 @@
-function city=read_city_workbook(file,confirm4549BothSexes)
+function [city,cityNames]=read_city_workbook(file,confirm4549BothSexes)
 % Import iv-essential data.xlsx without changing the source workbook.
 % Set confirm4549BothSexes=true ONLY after verifying the mislabeled column.
 if nargin<2, confirm4549BothSexes=false; end
@@ -18,6 +18,19 @@ if numel(actual)==24 && actual(16)=="45-49岁人口(人)"
 end
 assert(isequal(actual,expected),'IV:WorkbookHeaders', ...
     'Workbook layout changed. Check headers before adapting the import.');
+% The updated workbook appends three nationwide totals without city codes.
+% Exclude ONLY explicitly named aggregate rows, never arbitrary missing IDs.
+names=strtrim(string(t{:,1}));
+aggregate=ismember(names,["合计","全国","总计"]);
+fprintf('Excluded %d explicitly labeled aggregate rows.\n',sum(aggregate));
+t=t(~aggregate,:);
+ids=string(t{:,2});
+assert(~any(ismissing(ids) | ids=="NaN" | strlength(strtrim(ids))==0), ...
+    'IV:CityID','A nonaggregate row has no city ID.');
+cityNames=unique(table(ids,string(t{:,1}), ...
+    'VariableNames',{'city_id','city_name'}),'rows');
+assert(numel(unique(cityNames.city_id))==height(cityNames), ...
+    'IV:CityName','A city ID maps to more than one name.');
 assert(isequal(confirm4549BothSexes,true),'IV:SexDefinition', ...
     ['Column 16 is labeled female population. Verify it is BOTH SEXES ', ...
     'before setting confirm4549BothSexes=true; otherwise supply corrected counts.']);
