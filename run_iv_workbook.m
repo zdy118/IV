@@ -3,7 +3,7 @@ root=fileparts(mfilename('fullpath'));
 dataDir='D:\SZU\aging&TFP&labour\aging\IV';
 % Updated file has the corrected both-sex age label; keep filename explicit.
 cityWorkbook=fullfile(dataDir,'iv-essential data2.xlsx');
-nationalFile=fullfile(dataDir,'total.xlsx');
+nationalFile=fullfile(dataDir,'total_national.xlsx');
 % Corrected both-sex header is accepted automatically by the reader.
 confirm4549BothSexes=false;
 % Change only after checking the original statistical source, never to force a run.
