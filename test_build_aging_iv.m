@@ -12,6 +12,22 @@ assert(abs(r.pred_OR_2010-5/13)<1e-12);
 assert(abs(r.pred_OR_2020-5/13)<1e-12);
 assert(abs(r.Z)<1e-12 && abs(r.D)<1e-12);
 assert(any(c.cohort_factor>1)); % Never cap national ratios at one.
+a=audit_national_counts(national);
+assert(~any(a.requires_review));
+badNational=national;
+badNational.population(badNational.year==2010 & badNational.age_start==40)=12000603484;
+a=audit_national_counts(badNational);
+assert(a.requires_review(a.year==2010));
+ca=audit_city_counts(city);
+assert(~any(ca.requires_review));
+badCity=city; badCity.population(1)=1e10;
+ca=audit_city_counts(badCity);
+assert(any(ca.requires_review));
+reference=national; reference.population=reference.population*0.1;
+coverage=compare_reference_coverage(city,reference);
+assert(all(coverage.equals_sample));
+coverage=compare_reference_coverage(city,national);
+assert(~any(coverage.equals_sample));
 % Nonuniform baseline distinguishes horizons and tests open-tail pooling.
 city.population(1:17)=(1:17)';
 [r,c]=build_aging_iv(city,national);
