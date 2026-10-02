@@ -29,6 +29,36 @@
 
 ## 运行
 
+### 单独计算全国队列变化率 g
+
+新增 `compute_national_cohort_rates.m`，只接收全国人口长表，不需要地级市数据。它计算：
+
+- `g(b,10) = 全国2010年(b+10)至(b+14)岁人口 / 全国2000年b至(b+4)岁人口`
+- `g(b,20) = 全国2020年(b+20)至(b+24)岁人口 / 全国2000年b至(b+4)岁人口`
+
+两个跨度都从2000年出发。g是队列人口之比，不是增长百分比，不减1、不年化，也不截断到0—1。
+
+```matlab
+run_national_g   % 修改顶部nationalFile路径后运行，单独计算并导出g
+% 或者直接调用函数：
+national = read_national_workbook('total_national.xlsx');
+rates = compute_national_cohort_rates(national);
+```
+
+`run_national_g` 在独立结果目录输出 `national_cohort_rates.csv` 和 `.mat`，以及全国数据诊断表。结果列包含基期/目标年份、跨度、基期/目标年龄组起点、开放组标记、全国分母/分子和 `g`。输入仍需真实全国同口径人数，函数不能仅凭表结构验证数据来源。
+
+若末组为85+，2010年的尾组为 `全国2010年85+ / 全国2000年75+`，2020年的尾组为 `全国2020年85+ / 全国2000年65+`。因此结果分别有16和14行，共30行；尾组是合并队列，不能解释为单个五岁组的g。
+
+`build_aging_iv` 现复用该函数，每次调用只计算一次全国g。原有两个输出的调用方式兼容；第三个输出返回全国变化率表：
+
+```matlab
+[iv, cohortAudit, nationalRates] = build_aging_iv(city, national);
+test_national_cohort_rates
+test_build_aging_iv
+```
+
+两个IV入口也自动导出 `national_cohort_rates.csv`，并将 `nationalRates` 保存到结果MAT文件。新增测试覆盖普通组、80+/85+尾组、g>1、输入乱序、重复/缺失/非法人口，以及IV计算与独立g函数的一致性。
+
 使用 MATLAB R2020b 或更新版本，无须额外工具箱。将代码放在同一目录，准备下述两个输入文件，然后运行：
 
 ```matlab

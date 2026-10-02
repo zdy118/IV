@@ -39,15 +39,16 @@ assert(referenceScope~="national" || ~all(coverage.equals_sample), ...
     'IV:ReferenceCoverage', ...
     ['Reference counts equal the study-city sums in every cell. Supply independent ', ...
     'nationwide data, or explicitly choose sample_aggregate as an alternative design.']);
-[iv,cohorts]=build_aging_iv(city,national);
+[iv,cohorts,nationalRates]=build_aging_iv(city,national);
 iv=join(iv,cityNames,'Keys','city_id');
 iv.reference_scope=repmat(referenceScope,height(iv),1);
 writetable(city,fullfile(outputDir,'city_age_standardized.csv'));
 writetable(national,fullfile(outputDir,'national_age_standardized.csv'));
 writetable(iv,fullfile(outputDir,'iv_2010_2020.csv'));
 writetable(cohorts,fullfile(outputDir,'cohort_audit.csv'));
+writetable(nationalRates,fullfile(outputDir,'national_cohort_rates.csv'));
 save(fullfile(outputDir,'iv_2010_2020.mat'),'iv','cohorts','audit', ...
-    'cityWorkbook','nationalFile','allowReviewedNationalOutliers');
+    'cityWorkbook','nationalFile','allowReviewedNationalOutliers','nationalRates');
 save(fullfile(outputDir,'iv_2010_2020.mat'),'referenceScope', ...
     'allowReviewedCityOutliers','cityAudit','coverage','-append');
 fprintf('Saved %d cities to %s\n',height(iv),outputDir);

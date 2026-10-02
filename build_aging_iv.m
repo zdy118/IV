@@ -1,4 +1,4 @@
-function [result, cohorts] = build_aging_iv(city, national)
+function [result, cohorts, nationalRates] = build_aging_iv(city, national)
 %BUILD_AGING_IV 2000 baseline -> 2010/2020 predicted old-age ratios.
 % city: city_id (string), year, age_start, population.
 % national: year, age_start, population. Counts, not age shares.
@@ -21,11 +21,9 @@ grid = sort(unique(national.age_start));
 top = grid(end);
 assert(top>=80 && isequal(grid,(0:5:top)'), ...
     'IV:AgeGrid', 'Require 0,5,...,top with final open group top>=80.');
-nat = zeros(numel(grid),3);
 years = [2000 2010 2020];
-for k=1:3
-    nat(:,k) = getVector(national(national.year==years(k),:),grid);
-end
+% Compute shared national factors once, outside all city loops.
+nationalRates=compute_national_cohort_rates(national);
 ids = unique(city.city_id,'sorted');
 n = numel(ids);
 assert(n>0,'IV:Empty','No city observations.');
@@ -37,7 +35,7 @@ for i=1:n
     local = city(city.city_id==ids(i),:);
     base = getVector(local(local.year==2000,:),grid);
     for k=1:2
-        target = years(k+1); tau=target-2000;
+        target = years(k+1);
         actual = getVector(local(local.year==target,:),grid);
         obsA(i,k)=sum(actual(grid>=60));
         obsN(i,k)=sum(actual(grid>=20));
@@ -47,18 +45,17 @@ for i=1:n
 
         % Top group T+ at target corresponds to ALL baseline ages (T-tau)+.
         % Pool that baseline tail once; never reuse target T+ for each group.
-        cut=top-tau;
-        regular=grid<cut;
-        sourceAge=[grid(regular);cut];
-        baseCity=[base(regular);sum(base(~regular))];
-        baseNat=[nat(regular,1);sum(nat(~regular,1))];
-        destination=sourceAge+tau;
-        [found,index]=ismember(destination,grid);
-        assert(all(found),'IV:Mapping','Cohort destination not found.');
-        targetNat=nat(index,k+1);
-        assert(all(baseNat>0),'IV:ZeroNational', ...
-            'National baseline cohort counts must be positive.');
-        g=targetNat./baseNat;
+        rate=nationalRates(nationalRates.target_year==target,:);
+        sourceAge=rate.base_age_start;
+        destination=rate.target_age_start;
+        [found,index]=ismember(sourceAge,grid);
+        assert(all(found),'IV:Mapping','Cohort source not found.');
+        baseCity=base(index);
+        tail=find(rate.is_open_group);
+        baseCity(tail)=sum(base(grid>=sourceAge(tail)));
+        baseNat=rate.base_population;
+        targetNat=rate.target_population;
+        g=rate.g;
         p=baseCity.*g;
         predA(i,k)=sum(p(destination>=60));
         predN(i,k)=sum(p(destination>=20));
