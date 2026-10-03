@@ -1,3 +1,14 @@
 data/
 results/
 *.asv
+
+# Local regression inputs, outputs and logs
+endogeneity_sample.*
+endogeneity_results.*
+endogeneity_stata.log
+panel_long_difference.dta
+merge_audit.csv
+sample_audit.csv
+province_label_audit.csv
+pretrend_diagnostic.csv
+matlab_endogeneity_results/

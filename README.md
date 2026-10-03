@@ -1,6 +1,12 @@
 # 人口老龄化 IV：Stata 简化版
 
-本分支 `stata-iv` 使用手动导入 Excel 的工作方式，只保留两个计算脚本：
+## 新增：2010—2020年内生性检验
+
+见 [endogeneity/README.md](endogeneity/README.md)。新增与当前队列推进IV一致的OLS、2SLS、稳健内生性检验、第一阶段诊断和Anderson–Rubin置信集合，并提供Stata和MATLAB实现。数据准备与估计分开，原有IV构建流程保留。
+
+TFP已按论文表2-1核对，使用已取对数的实际/前沿TFP，详见 [数据匹配记录](endogeneity/DATA_MATCH.md)。Stata18已实际运行282市、24组设定并独立数值复核；MATLAB因本机启动错误尚未实际运行，不能将其测试文件的存在视为测试通过。原始数据和逐城市结果不上传。
+
+本分支 `stata-iv` 使用手动导入 Excel 的工作方式，IV构建部分使用两个计算脚本：
 
 1. 导入全国表后，运行 [stata/national_g.do](stata/national_g.do)，计算全国队列变化率 g。
 2. 导入城市表后，运行 [stata/run_iv.do](stata/run_iv.do)，计算实际老龄化变化 D 和工具变量 Z。
