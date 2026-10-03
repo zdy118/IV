@@ -1,28 +1,12 @@
-# Stata版人口老龄化IV构建
+# 人口老龄化 IV：Stata 简化版
 
-本分支 `stata-iv` 提供 Stata 实现：读取2000、2010、2020年城市与全国年龄人口，计算全国队列变化率g，预测城市老龄化，构造2010—2020年长差分IV。
+本分支 `stata-iv` 使用手动导入 Excel 的工作方式，只保留两个计算脚本：
 
-## 开始运行
+1. 导入全国表后，运行 [stata/national_g.do](stata/national_g.do)，计算全国队列变化率 g。
+2. 导入城市表后，运行 [stata/run_iv.do](stata/run_iv.do)，计算实际老龄化变化 D 和工具变量 Z。
 
-需要 Stata 16+，无需外部扩展。下载本分支后，将当前目录设为仓库根目录，在 `stata/run_iv.do` 顶部设置数据路径，然后运行：
+**导入范围及操作步骤见 [Stata说明](stata/README.md)。** 无须设置路径宏或加载自定义程序。结果保存为当前工作目录中的 DTA 和 Excel 文件。
 
-```stata
-do stata/test_iv.do
-do stata/run_iv.do
-```
+两个预测都从2000年出发，保留85+尾组处理。2026-10-03在Stata/MP 18使用真实数据运行成功，共287市；结果与原版最大差异7.8e-16。
 
-代码会清空内存数据，请先保存正在编辑的数据。输入为 `iv-essential data2.xlsx` 和官方全国表 `total_national.xlsx`。结果存放在 `results/stata_日期时间/`，包括城市IV、全国g、队列核对表及诊断日志。
-
-- [运行入口](stata/run_iv.do)
-- [Excel导入](stata/import_census.do)
-- [全国g与IV计算](stata/iv_lib.do)
-- [详细说明](stata/README.md)
-- [原MATLAB说明及官方数据来源](MATLAB_README.md)
-
-## 定义与验证
-
-OR为60岁及以上人口占20岁及以上人口的比例。两个预测均从2000年出发；D是实际OR的2010—2020年对数变化，Z是预测OR的同期对数变化。85+尾组按预测跨度合并基期人口；g不截断至1。
-
-2026-10-02已在本机Stata/MP 18中通过模拟测试，并完成真实数据流程：287个城市、30行全国g、8,610行队列核对记录。独立读取Excel并重新计算，与Stata输出的OR、预测OR和Z核对一致，误差小于1e-12。这验证计算实现，不证明IV的相关性、排除性或行政区划口径一致性。
-
-本分支完成IV构建，不包含TFP回归。原MATLAB文件保留供对照；main分支保持MATLAB版本。原始城市数据与运行结果不上传仓库。
+原MATLAB代码保留，[MATLAB说明及全国数据来源](MATLAB_README.md)仍可查阅。
