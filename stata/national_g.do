@@ -1,4 +1,4 @@
-version 16.0
+version 18.0
 set more off
 * 手动导入 total_national.xlsx：Sheet1，A4:D22，不勾选首行作为变量名。
 * 导入后变量为 A B C D；结果保存到 Stata 当前工作目录。
