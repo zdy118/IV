@@ -1,11 +1,5 @@
-version 16.0
-set more off
 * 手动导入 iv-essential data2.xlsx：Sheet1，A2:X865，不勾选首行作为变量名。
 * 变量应为 A—X；合计行自动去除。当前目录须有 national_g.dta。
-drop if A=="合计"
-rename (A B C) (city_name city_id year)
-drop D E
-destring city_id year F-X, replace
 recast double F-X
 assert !missing(city_id,year)
 assert inlist(year,2000,2010,2020)
@@ -40,7 +34,7 @@ egen double tail10=rowtotal(pop75-pop85)
 egen double tail20=rowtotal(pop65-pop85)
 drop year
 reshape long pop, i(city_id) j(age)
-merge m:1 age using national_g.dta, keep(master match) nogen
+merge m:1 age using  "D:\SZU\aging&TFP&labour\aging\IV\national_g.dta", keep(master match) nogen
 assert !missing(g10) if age<=75
 assert !missing(g20) if age<=65
 gen double p10=pop*g10 if age<75
@@ -59,7 +53,7 @@ gen double predOR2020=older20/adult20
 gen double Z=ln(predOR2020)-ln(predOR2010)
 
 * 3. 每市一行，D为实际变化，Z为工具变量。
-merge 1:1 city_id using `actual', assert(match) nogen
+merge 1:1 city_id using `actual',assert(match) nogen
 keep city_id city_name OR2010 OR2020 predOR2010 predOR2020 D Z
 order city_id city_name OR2010 OR2020 predOR2010 predOR2020 D Z
 sort city_id
