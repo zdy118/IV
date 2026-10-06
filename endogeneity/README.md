@@ -73,10 +73,7 @@ MATLAB R2020b+；估计部分只用基础矩阵运算和betainc/betaincinv，无
 
 ## 来源与验证
 
-- 用户《IV构建》第一、四、五节；毕业论文2.1.2、表2-1及4.3.3。旧文关于“历史即严格外生”的结论不作为本代码前提。
-- 所引用对话最新可读内容涉及长差分唯一键和临时文件作用域。本模块采用实体中间文件并检查每市一行。
+
 - [Stata官方IV后估计手册](https://www.stata.com/manuals/rivregresspostestimation.pdf)：稳健内生性检验与第一阶段统计量。
 - [Stata官方2SLS说明](https://www.stata.com/support/faqs/statistics/instrumental-variables-regression/)：两阶段工具和标准误。
 - [Hendy原文](https://www.rba.gov.au/publications/rdp/2025/2025-08/full.html)：队列推进设计；本项目不沿用其省级样本的工具强度。
-
-Stata18已实际运行全部24组；独立NumPy矩阵实现复核系数、标准误、F、p、AR多项式。MATLAB本机启动失败 `File system inconsistency`，因此MATLAB测试文件**已提供但未实际执行**；独立复核不是MATLAB运行成功的替代声明。
