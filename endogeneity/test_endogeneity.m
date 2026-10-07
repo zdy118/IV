@@ -1,5 +1,5 @@
 function test_endogeneity()
-% Synthetic tests: no private data, no external toolbox.
+% 用合成数据检验内生性估计和AR集合，不读取私人数据，不依赖额外工具箱。
 n=400;i=(1:n)';
 B=[sin(i),cos(i),sin(i*sqrt(2)),cos(i*sqrt(3))];
 B=B-mean(B,1);[B,~]=qr(B,0);B=B*sqrt(n);

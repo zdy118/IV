@@ -1,5 +1,5 @@
 function r=iv_linear_fit(y,A,cluster)
-% OLS with HC1/CR1, including all estimated regressors in degrees of freedom.
+% 计算OLS及HC1或CR1协方差，自由度计入全部估计参数。
 assert(all(isfinite([y,A]),'all'),'IV:Missing','Nonfinite data.');
 assert(rank(A)==size(A,2),'IV:Rank','Collinear design.');
 r.b=A\y;r.e=y-A*r.b;

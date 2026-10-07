@@ -17,23 +17,55 @@ IV表来自已经完成的 `iv_2010_2020.xlsx`，必须包含 `city_id city_name
 
 无需安装ivreg2、ivreghdfe或其他扩展。使用Stata18原生命令。数据准备使用实体 `panel_long_difference.dta`，不依赖跨do-file的临时文件宏。缺失、重复、未匹配均保留审计记录；最终样本282市。
 
-## MATLAB
+## MATLAB：直接读取 eng-sample.xls
 
-将本目录加入路径，在同一个数据工作目录运行：
+2026-10-07起，默认输入改为用户提供的 `eng-sample.xls`。**不需要再导出中间CSV，也不需要修改Excel变量名。** 所有输入列按原始大小写保留，校验函数按名称读取，不依赖列顺序。当前文件含282行、24列，无缺失，数值与此前检验样本在浮点精度内一致。
 
 ```matlab
 addpath('你的仓库/endogeneity');
-run_endogeneity('endogeneity_sample.csv','matlab_endogeneity_results');
-% 程序自检（不使用私人数据）：
+run_endogeneity( ...
+    'D:/SZU/aging&TFP&labour/aging/IV/eng-sample.xls', ...
+    'matlab_endogeneity_results');
+% 若当前目录已有eng-sample.xls，可直接：
+% run_endogeneity
+
+% 可执行的测试：
 test_endogeneity;
-% 两种语言都运行后比较：
-compare_stata_results('endogeneity_results.csv', ...
-    'matlab_endogeneity_results/endogeneity_results.csv');
+test_read_endogeneity_sample( ...
+    'D:/SZU/aging&TFP&labour/aging/IV/eng-sample.xls');
 ```
 
-MATLAB R2020b+；估计部分只用基础矩阵运算和betainc/betaincinv，无额外工具箱。MATLAB不直接读取用户的DTA：先由同目录 `prepare_endogeneity.do` 导出统一CSV，再独立计算OLS、2SLS、协方差和全部检验。也可手工准备同结构CSV，列定义见下方。它不会读取Stata估计结果作为自己的估计输入。
+MATLAB R2020b+，无需统计或计量工具箱。使用 `readtable(...,'VariableNamingRule','preserve')` 读取Excel第一张表；同表头的XLSX/CSV仍受支持。原始数据不重新取对数、不重新缩尾，直接使用已构造的D、Z、Y_actual等列。原有Stata准备流程继续保留，已持有eng-sample.xls的MATLAB用户可直接估计。
 
-`endogeneity_sample.csv`每市一行，数值列至少包括：city_id、province、D、Z、Y_actual、Y_frontier、Y_actual_w、Y_frontier_w、ln_pop0、edu0、ln_budget0、age0、age0_sq、Y_pre、ln_pop_pre、edu_pre、ln_budget_pre。四个Y分别为原始/缩尾后的实际/前沿**对数TFP长差分**；province为六位城市代码前两位。省份、年龄平方、重复键和非有限值均检查。
+原表24个变量（原样保留）：
+
+```text
+city_id city_name OR2010 OR2020 predOR2010 predOR2020
+D Z panel_city edu_pre ln_pop_pre ln_budget_pre
+age0 edu0 ln_pop0 ln_budget0
+Y_actual Y_frontier Y_actual_w Y_frontier_w Y_pre
+age0_sq sample_ok province
+```
+
+- Y_actual、Y_frontier、Y_actual_w、Y_frontier_w：原始/缩尾实际与前沿对数TFP长差分。
+- D、Z：实际和预测老龄化比率的对数变化，与四列OR恒等式核对。
+- ln_pop0、edu0、ln_budget0：基准事前控制；age0、age0_sq用于年龄敏感性模型。
+- Y_pre、ln_pop_pre、edu_pre、ln_budget_pre：事前趋势诊断。
+- city_id、city_name、panel_city：城市唯一键与名称核对；province用于聚类/省份效应；sample_ok必须为1。
+
+缺少变量或大小写不一致会明确报出原始列名，不自动猜测映射、不静默删样本。输入函数检查数值类型、城市唯一性、名称、省份、年龄平方以及D/Z定义。
+
+### 中文摘要
+
+所有MATLAB函数开头的功能摘要已改为中文。运行后命令窗口显示中文检验摘要，并输出：
+
+- `内生性检验摘要.txt`：基准样本、OLS/2SLS、第一阶段、稳健内生性检验及AR集合，包含与本次p值相符的解释。
+- `内生性检验摘要.csv`：24组结果的中文列标题、模型设定和标准误说明；因变量仍显示原始Y_actual等名称。
+- `endogeneity_results.csv`、`pretrend_diagnostic.csv`：保留现有数值字段，供Stata/MATLAB核对使用。
+
+摘要不预填系数或显著性。内生性p≥0.05时写“未拒绝D外生”，不会写“证明D外生”或“工具变量通过外生性检验”。算法与24组估计设定保持一致。中文只用于说明/展示，不改变Excel中的输入变量名。
+
+本次通过Stata读取XLS并逐列核对源文件，最大数值差小于1e-15。MATLAB启动仍报 `File system inconsistency`，新增读取与摘要测试未能在本机实际执行；不将静态检查或数据核对宣称为MATLAB运行成功。
 
 ## 估计设定（不是旧面板回归的机械复刻）
 

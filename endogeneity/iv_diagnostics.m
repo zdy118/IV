@@ -1,6 +1,6 @@
 function s=iv_diagnostics(y,d,z,X,cluster)
-% Single endogenous regressor and one excluded IV; all observations identical.
-% HC1 or province CR1; classical Stock-Yogo cutoffs are not applied.
+% 单内生变量D、单排除工具Z的完整检验；因变量由原表Y_actual等列传入。
+% 所有模型采用同一样本，支持HC1或省级CR1；不机械套用Stock–Yogo阈值。
 y=double(y(:));d=double(d(:));z=double(z(:));X=double(X);
 n=numel(y);C=[ones(n,1),X];Q=[C,z];A=[C,d];k=size(A,2);
 assert(size(X,1)==n && numel(d)==n && numel(z)==n,'IV:Size','Dimension mismatch.');

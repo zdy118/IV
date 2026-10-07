@@ -1,5 +1,5 @@
 function text=ar_confidence_set(a,b,c)
-% All real beta satisfying a*beta^2+b*beta+c<=0, including unbounded sets.
+% 求解a*beta^2+b*beta+c<=0，保留完整AR置信集合和无界情形。
 assert(all(isfinite([a,b,c])),'IV:AR','Nonfinite polynomial.');
 if a==0
     if b>0,text=string(sprintf('(-Inf, %.8g]',-c/b));

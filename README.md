@@ -8,6 +8,10 @@ TFP已按论文表2-1核对，使用已取对数的实际/前沿TFP，详见 [�
 
 依据用户提供的《IV构建.docx》和“梳理参数估计思路”对话，实现以 **2000 年城市年龄结构**预测 2010、2020 年老龄化，并构造 **2010—2020 年长差分**。原始数据仅在本地读取，不随代码上传；本仓库不包含真实城市估计结果。
 
+### MATLAB输入与中文摘要更新（2026-10-07）
+
+内生性模块现直接读取 `eng-sample.xls`，严格保留表中24个变量名，新增中文命令窗口摘要、中文TXT及CSV结果摘要。[操作步骤与列名说明](endogeneity/README.md#matlab直接读取-eng-samplexls)。调用 `run_endogeneity('D:/SZU/aging&TFP&labour/aging/IV/eng-sample.xls')` 即可，无须先生成中间CSV。MATLAB本机启动故障仍未解决，尚未实际执行新增入口。
+
 ## 已适配的原始工作簿
 
 `run_iv_workbook.m` 直接读取同一目录中的 `iv-essential data2.xlsx` 和 `total_national.xlsx`（均为 Sheet1），无需手工转表。后者使用国家统计局三次人口普查第一部分全部数据的表3-1全国合计人数；原有样本合计文件 `total.xlsx` 不覆盖、不再作为默认参考表。原来的 `iv-essential data.xlsx` 仍保留女性人口表头，因此入口明确选择已更正表头的 data2 版本。若后续重命名文件，请修改入口顶部路径。

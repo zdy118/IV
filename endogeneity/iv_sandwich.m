@@ -1,4 +1,5 @@
 function [V,df,G]=iv_sandwich(H,u,bread,cluster,k)
+% 用回归设计和结构残差计算HC1或省级CR1三明治协方差。
 n=size(H,1);S=H.*u;
 assert(n>k,'IV:Sample','No residual degrees of freedom.');
 if isempty(cluster)

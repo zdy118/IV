@@ -1,5 +1,5 @@
 function compare_stata_results(stataCsv, matlabCsv)
-% Optional cross-language check using files generated from identical sample.
+% 比较同一样本、相同设定下Stata与MATLAB的系数、标准误及检验结果。
 a=readtable(stataCsv,'TextType','string');b=readtable(matlabCsv,'TextType','string');
 keys={'outcome','specification','vce'};
 a=sortrows(a,keys);b=sortrows(b,keys);
