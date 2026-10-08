@@ -2,6 +2,10 @@
 
 本模块使用新的队列推进 IV，替代论文4.3.3旧版历史生育率IV的实现。它只对应“老龄化→TFP”，不能用于论文4.2的“TFP→人口流动”方程。所有模型均为2010—2020年每市一行的横截面。
 
+## 代码目录（2026-10-08整理）
+
+Stata 代码位于 `stata/`，MATLAB 代码位于 `matlab/`。本次只调整位置，代码内容未修改，已有数据与结果保留原位。以下历史验证记录不代表本次重新运行。
+
 ## 数据依据
 
 先读 [DATA_MATCH.md](DATA_MATCH.md)。按论文表2-1核对，入口采用 `最全数据面板.dta` 的2004—2022年记录。`新时不变实际tfp`、`新时不变前沿tfp` **已经是ln(TFP)**，直接计算2020减2010，不再取对数。相同两列也存在于另两个版本中，已逐城市年份核对完全一致。
@@ -12,8 +16,10 @@ IV表来自已经完成的 `iv_2010_2020.xlsx`，必须包含 `city_id city_name
 
 将工作目录设到一个可写目录，将IV结果Excel放在这里。以下脚本全部完整运行，避免分块运行造成local作用域丢失。原始面板不会被覆盖；本模块生成的同名结果会覆盖。
 
-1. 手动打开 `最全数据面板.dta`，运行 `prepare_endogeneity.do`。
-2. 运行 `test_endogeneity.do`。
+1. 手动打开 `最全数据面板.dta`，完整运行 [stata/prepare_endogeneity.do](stata/prepare_endogeneity.do)。
+2. 完整运行 [stata/test_endogeneity.do](stata/test_endogeneity.do)。
+
+运行时用 do-file 的完整路径定位代码，Stata 当前工作目录仍设为数据和结果所在目录，不必切换到 `stata/`。
 
 无需安装ivreg2、ivreghdfe或其他扩展。使用Stata18原生命令。数据准备使用实体 `panel_long_difference.dta`，不依赖跨do-file的临时文件宏。缺失、重复、未匹配均保留审计记录；最终样本282市。
 
@@ -22,7 +28,7 @@ IV表来自已经完成的 `iv_2010_2020.xlsx`，必须包含 `city_id city_name
 2026-10-07起，默认输入改为用户提供的 `eng-sample.xls`。**不需要再导出中间CSV，也不需要修改Excel变量名。** 所有输入列按原始大小写保留，校验函数按名称读取，不依赖列顺序。当前文件含282行、24列，无缺失，数值与此前检验样本在浮点精度内一致。
 
 ```matlab
-addpath('你的仓库/endogeneity');
+addpath('你的仓库/endogeneity/matlab');
 run_endogeneity( ...
     'D:/SZU/aging&TFP&labour/aging/IV/eng-sample.xls', ...
     'matlab_endogeneity_results');
