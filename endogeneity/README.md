@@ -26,15 +26,15 @@ IV表来自已经完成的 `iv.dta`，必须包含 `city_id city_name OR2010 OR2
 ```matlab
 addpath('你的仓库/endogeneity/matlab');
 run_endogeneity( ...
-    'D:/SZU/aging&TFP&labour/aging/IV/eng-sample.xls', ...
+    'D:/SZU/aging&TFP&labour/aging/IV/endogeneity-sample.xls', ...
     'matlab_endogeneity_results');
-% 若当前目录已有eng-sample.xls，可直接：
+% 若当前目录已有endogeneity-sample.xls，可直接：
 % run_endogeneity
 
 % 可执行的测试：
 test_endogeneity;
 test_read_endogeneity_sample( ...
-    'D:/SZU/aging&TFP&labour/aging/IV/eng-sample.xls');
+    'D:/SZU/aging&TFP&labour/aging/IV/endogeneity-sample.xls');
 ```
 
 MATLAB R2020b+，无需统计或计量工具箱。使用 `readtable(...,'VariableNamingRule','preserve')` 读取Excel第一张表；同表头的XLSX/CSV仍受支持。原始数据不重新取对数、不重新缩尾，直接使用已构造的D、Z、Y_actual等列。原有Stata准备流程继续保留，已持有endogeneity-sample.xls的MATLAB用户可直接估计。
