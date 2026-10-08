@@ -1,4 +1,4 @@
-* 手动导入 iv-essential data2.xlsx：Sheet1，A2:X865，不勾选首行作为变量名。
+* 手动导入 iv-essential data.dta：Sheet1，A2:X865，不勾选首行作为变量名。
 * 变量应为 A—X；合计行自动去除。当前目录须有 national_g.dta。
 recast double F-X
 assert !missing(city_id,year)
@@ -58,4 +58,4 @@ keep city_id city_name OR2010 OR2020 predOR2010 predOR2020 D Z
 order city_id city_name OR2010 OR2020 predOR2010 predOR2020 D Z
 sort city_id
 save iv_2010_2020.dta, replace
-export excel using iv_2010_2020.xlsx, firstrow(variables) replace
+export excel using iv.dta, firstrow(variables) replace
