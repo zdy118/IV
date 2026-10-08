@@ -6,7 +6,7 @@
 
 按论文表2-1核对，入口采用 `最全数据面板.dta` 的2004—2022年记录。`新时不变实际tfp`、`新时不变前沿tfp` **已经是ln(TFP)**，直接计算2020减2010，不再取对数。相同两列也存在于另两个版本中，已逐城市年份核对完全一致。
 
-IV表来自已经完成的 `iv_2010_2020.xlsx`，必须包含 `city_id city_name OR2010 OR2020 predOR2010 predOR2020 D Z`。代码重新核对D、Z与各比率的恒等关系，不沿用旧历史生育率IV。全国g、2000年基期及85+尾组规则保持不变。
+IV表来自已经完成的 `iv.dta`，必须包含 `city_id city_name OR2010 OR2020 predOR2010 predOR2020 D Z`。代码重新核对D、Z与各比率的恒等关系，不沿用旧历史生育率IV。全国g、2000年基期及85+尾组规则保持不变。
 
 ## Stata：两步运行
 
@@ -37,7 +37,7 @@ test_read_endogeneity_sample( ...
     'D:/SZU/aging&TFP&labour/aging/IV/eng-sample.xls');
 ```
 
-MATLAB R2020b+，无需统计或计量工具箱。使用 `readtable(...,'VariableNamingRule','preserve')` 读取Excel第一张表；同表头的XLSX/CSV仍受支持。原始数据不重新取对数、不重新缩尾，直接使用已构造的D、Z、Y_actual等列。原有Stata准备流程继续保留，已持有eng-sample.xls的MATLAB用户可直接估计。
+MATLAB R2020b+，无需统计或计量工具箱。使用 `readtable(...,'VariableNamingRule','preserve')` 读取Excel第一张表；同表头的XLSX/CSV仍受支持。原始数据不重新取对数、不重新缩尾，直接使用已构造的D、Z、Y_actual等列。原有Stata准备流程继续保留，已持有endogeneity-sample.xls的MATLAB用户可直接估计。
 
 原表24个变量（原样保留）：
 
