@@ -14,10 +14,6 @@ endogeneity/
   DATA_MATCH.md          数据口径核对
 ```
 
-- [IV 构建说明](iv_construction/README.md)：手动导入 Excel 后使用 Stata；含当前脚本的输入要求。
-- [内生性检验说明](endogeneity/README.md)：模型、数据、检验解释和运行方法。
-- [Stata 内生性代码](endogeneity/stata/)。
-- [MATLAB 内生性代码](endogeneity/matlab/)：保留 eng-sample.xls 原始变量名和中文摘要。
 
 先构建全国 g 和城市 IV，再进行内生性检验。代码目录与数据工作目录可以不同；调用脚本时使用代码完整路径，数据和输出仍按各脚本原有路径处理。
 
